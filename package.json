@@ -1,0 +1,9 @@
+{
+  "name": "agenda-eletronica",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  }
+}
