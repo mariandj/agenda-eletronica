@@ -3,7 +3,7 @@ const path = require('path');
 
 function logErro(err, contexto = {}) {
   try {
-    const dir = path.join(__dirname, '..', 'logs');
+    const dir = path.join(__dirname, '..', 'agenda-eletronica');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const dia = new Date().toISOString().slice(0, 10).replaceAll('-', '');
     const file = path.join(dir, `erros-${dia}.log`);

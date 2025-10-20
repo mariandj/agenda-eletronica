@@ -1,6 +1,6 @@
-const { getDb } = require('../db/mongo');
-const { logErro } = require('../utils/logger');
-const { exigir } = require('../utils/validar');
+const { getDb } = require('./mongo');
+const { logErro } = require('./logger');
+const { exigir } = require('./validar');
 
 class Categoria {
   static collection() { return getDb().collection('categorias'); }

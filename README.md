@@ -18,13 +18,16 @@ O sistema implementa classes em Node.js que acessam o MongoDB para inserção, b
 
 ```
 agenda-eletronica/  
-  src/
-    db/           # conexão com MongoDB
-    models/       # classes: Usuario, Categoria, Evento
-    utils/        # logger e validações
-    logs/         # arquivos .log de exceções
-    index.js      # script de demonstração
-  .env            # credenciais do MongoDB
+  / node_modules
+  logger.js
+  validar.js
+  mongo.js
+  erros-AAAAMMDD.log
+  Evento.js
+  Usuario.js
+  Categoria.js         
+  index.js      
+  .env           
   package.json
   README.md
 ```
