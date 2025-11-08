@@ -47,6 +47,50 @@ class Evento {
     }
   }
 
+  static async listarTodos() {
+    try {
+      const db = getDb();
+
+      const eventos = await db.collection('eventos').find({}).toArray();
+      const usuarios = await db.collection('usuarios').find({}).toArray();
+
+      const mapaUsuarios = {};
+      for (const u of usuarios) {
+        mapaUsuarios[u._id.toString()] = u.nome;
+      }
+
+      for (const ev of eventos) {
+        ev.usuarioNome = mapaUsuarios[ev.usuarioId] || 'Usuário não encontrado';
+      }
+
+      return eventos;
+    } catch (err) {
+      logErro(err, { classe: 'Evento', metodo: 'listarTodos' });
+      throw err;
+    }
+  }
+
+  static async atualizarPorId(id, dados) {
+  const { ObjectId } = require('mongodb');
+  try {
+    const campos = {};
+    if (dados.titulo) campos.titulo = dados.titulo;
+    if (dados.descricao) campos.descricao = dados.descricao;
+    if (dados.inicio) campos.inicio = new Date(dados.inicio);
+    if (dados.fim) campos.fim = new Date(dados.fim);
+    if (dados.cor) campos.cor = dados.cor;
+
+    const r = await this.collection().updateOne(
+      { _id: new ObjectId(id) },
+      { $set: campos }
+    );
+    return r.matchedCount === 1;
+  } catch (err) {
+    logErro(err, { classe: 'Evento', metodo: 'atualizarPorId', id });
+    throw err;
+  }
+}
+
   static async deletarPorId(id) {
     const { ObjectId } = require('mongodb');
     try {

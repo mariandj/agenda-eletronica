@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Calendário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; background:#fafafa; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    h1 { margin:0; }
+    nav a {
+      margin-left: 12px;
+      text-decoration:none;
+      color:#0d6efd;
+      font-weight:500;
+    }
+    nav a:hover { text-decoration:underline; }
+
+    .calendar {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      max-width:900px;
+    }
+
+    .day-card {
+      background:#fff;
+      border-radius:8px;
+      border:1px solid #e5e5e5;
+      padding:12px 16px;
+      box-shadow:0 1px 2px rgba(0,0,0,.04);
+    }
+
+    .day-title {
+      font-weight:600;
+      margin-bottom:8px;
+    }
+
+    .event-item {
+      margin:6px 0;
+      padding:6px 8px;
+      border-radius:4px;
+      background:#f8f9fa;
+      display:flex;
+      flex-direction:column;
+      border-left:8px solid #999;
+    }
+
+    .event-title {
+      font-weight:600;
+      margin-bottom:2px;
+    }
+
+    .event-meta {
+      font-size:0.85rem;
+      color:#555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Agenda Eletrônica</h1>
+    <nav>
+      <a href="/usuarios/view/lista">Usuários</a>
+      <a href="/eventos/view/lista">Eventos filtrados</a>
+      <a href="/eventos/view/lista">Buscar por usuário/período</a>
+      <a href="/categorias/view/lista">Categorias</a>
+    </nav>
+  </header>
+
+  <section class="calendar">
+    {{#if dias.length}}
+      {{#each dias}}
+        <div class="day-card">
+          <div class="day-title">{{this.label}}</div>
+
+          {{#each this.eventos}}
+            <div class="event-item" style="border-left-color: {{this.cor}};">
+              <div class="event-title">{{this.titulo}}</div>
+              <div class="event-meta">
+                {{formatarData this.inicio}} – {{formatarData this.fim}}
+                · Usuário: {{this.usuarioNome}}
+                {{#if this.descricao}} · {{this.descricao}}{{/if}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    {{else}}
+      <p>Nenhum evento cadastrado.</p>
+    {{/if}}
+  </section>
+</body>
+</html>

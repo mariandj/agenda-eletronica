@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Usuários</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+    h1 { margin-bottom: 12px; }
+    table { border-collapse: collapse; width: 100%; max-width: 800px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; }
+    th { background: #f5f5f5; text-align: left; }
+    .empty { color: #999; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Usuários cadastrados</h1>
+
+  {{#if usuarios.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Criado em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each usuarios}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.nome}}</td>
+            <td>{{this.email}}</td>
+            <td>{{formatarData this.criadoEm}}</td>
+            <td>
+              <button class="btn-editar">Editar</button>
+              <button class="btn-excluir">Excluir</button>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhum usuário cadastrado.</p>
+  {{/if}}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabela = document.querySelector('table');
+      if (!tabela) return; // não há usuários, não tem tabela
+
+      tabela.addEventListener('click', async (e) => {
+        const btn = e.target;
+        const linha = btn.closest('tr[data-id]');
+        if (!linha) return;
+        const id = linha.getAttribute('data-id');
+
+        // EDITAR
+        if (btn.classList.contains('btn-editar')) {
+          const nomeAtual = linha.children[0].textContent.trim();
+          const emailAtual = linha.children[1].textContent.trim();
+
+          const novoNome = prompt('Novo nome:', nomeAtual);
+          if (novoNome === null) return;
+
+          const novoEmail = prompt('Novo e-mail:', emailAtual);
+          if (novoEmail === null) return;
+
+          try {
+            const resp = await fetch(`/usuarios/${id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nome: novoNome, email: novoEmail })
+            });
+            if (!resp.ok) {
+              const erro = await resp.json().catch(() => ({}));
+              alert('Erro ao atualizar: ' + (erro.error || resp.status));
+              return;
+            }
+            linha.children[0].textContent = novoNome;
+            linha.children[1].textContent = novoEmail;
+          } catch (err) {
+            alert('Erro de rede ao atualizar usuário');
+          }
+        }
+
+        // EXCLUIR
+        if (btn.classList.contains('btn-excluir')) {
+          if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+
+          try {
+            const resp = await fetch(`/usuarios/${id}`, { method: 'DELETE' });
+            if (!resp.ok) {
+              const erro = await resp.json().catch(() => ({}));
+              alert('Erro ao excluir: ' + (erro.error || resp.status));
+              return;
+            }
+            linha.remove();
+          } catch (err) {
+            alert('Erro de rede ao excluir usuário');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

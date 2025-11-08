@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Eventos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+    h1 { margin-bottom: 12px; }
+    table { border-collapse: collapse; width: 100%; max-width: 900px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; }
+    th { background: #f5f5f5; text-align: left; }
+    .empty { color: #999; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Eventos cadastrados</h1>
+
+  {{#if eventos.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Descrição</th>
+          <th>Usuário</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each eventos}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.titulo}}</td>
+            <td>{{this.descricao}}</td>
+            <td>{{this.usuarioNome}}</td>
+            <td>{{formatarData this.inicio}}</td>
+            <td>{{formatarData this.fim}}</td>
+            <td>
+              <button class="btn-editar">Editar</button>
+              <button class="btn-excluir">Excluir</button>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhum evento cadastrado.</p>
+  {{/if}}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabela = document.querySelector('table');
+      if (!tabela) return; // não há eventos, não tem tabela
+
+      tabela.addEventListener('click', async (e) => {
+        const btn = e.target;
+        const linha = btn.closest('tr[data-id]');
+        if (!linha) return;
+        const id = linha.getAttribute('data-id');
+
+        // EDITAR
+        if (btn.classList.contains('btn-editar')) {
+          const tituloAtual = linha.children[0].textContent.trim();
+          const descAtual   = linha.children[1].textContent.trim();
+
+          const novoTitulo = prompt('Novo título:', tituloAtual);
+          if (novoTitulo === null) return;
+
+          const novaDesc = prompt('Nova descrição:', descAtual);
+          if (novaDesc === null) return;
+
+          try {
+            const resp = await fetch(`/eventos/${id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ titulo: novoTitulo, descricao: novaDesc })
+            });
+            if (!resp.ok) {
+              const erro = await resp.json().catch(() => ({}));
+              alert('Erro ao atualizar: ' + (erro.error || resp.status));
+              return;
+            }
+            linha.children[0].textContent = novoTitulo;
+            linha.children[1].textContent = novaDesc;
+          } catch (err) {
+            alert('Erro de rede ao atualizar evento');
+          }
+        }
+
+        // EXCLUIR
+        if (btn.classList.contains('btn-excluir')) {
+          if (!confirm('Tem certeza que deseja excluir este evento?')) return;
+
+          try {
+            const resp = await fetch(`/eventos/${id}`, { method: 'DELETE' });
+            if (!resp.ok) {
+              const erro = await resp.json().catch(() => ({}));
+              alert('Erro ao excluir: ' + (erro.error || resp.status));
+              return;
+            }
+            linha.remove();
+          } catch (err) {
+            alert('Erro de rede ao excluir evento');
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
