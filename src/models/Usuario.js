@@ -17,6 +17,19 @@ class Usuario {
     }
   }
 
+  static async autenticar(email, senhaHash) {
+  try {
+    const usuario = await this.collection().findOne({ 
+      email,
+      senhaHash  
+    });
+    return usuario;
+  } catch (err) {
+    logErro(err, { classe: 'Usuario', metodo: 'autenticar', email });
+    throw err;
+  }
+}
+
   static async buscarPorId(id) {
     const { ObjectId } = require('mongodb');
     try {

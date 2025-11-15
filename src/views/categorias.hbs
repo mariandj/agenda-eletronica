@@ -4,130 +4,48 @@
   <meta charset="utf-8" />
   <title>Agenda Eletrônica – Categorias</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
-    h1 { margin-bottom: 12px; }
-    table { border-collapse: collapse; width: 100%; max-width: 600px; }
-    th, td { border: 1px solid #ddd; padding: 8px 10px; }
-    th { background: #f5f5f5; text-align: left; }
-    .empty { color: #999; margin-top: 16px; }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <h1>Categorias cadastradas</h1>
 
-{{#if categorias.length}}
-  <table>
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Usuário</th>
-        <th>Cor</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each categorias}}
-        <tr data-id="{{this._id}}">
-          <td>{{this.nome}}</td>
-          <td>{{this.usuarioNome}}</td>
-          <td>
-            <span class="cor-texto">{{this.cor}}</span>
-            {{#if this.cor}}
-              <span
-                class="cor-quadrado"
-                style="
-                  display:inline-block;
-                  width:16px;
-                  height:16px;
-                  border-radius:4px;
-                  border:1px solid #ccc;
-                  margin-left:8px;
-                  background-color: {{this.cor}};
-                "
-              ></span>
-            {{/if}}
-          </td>
-          <td>
-            <button class="btn-editar">Editar</button>
-            <button class="btn-excluir">Excluir</button>
-          </td>
+  {{#if categorias.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Usuário</th>
+          <th>Cor</th>
+          <th class="acoes">Ações</th>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
-{{else}}
-  <p class="empty">Nenhuma categoria cadastrada.</p>
-{{/if}}
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabela = document.querySelector('table');
-    if (!tabela) return; // não há categorias, não tem tabela
-
-    tabela.addEventListener('click', async (e) => {
-      const btn = e.target;
-      const linha = btn.closest('tr[data-id]');
-      if (!linha) return;
-      const id = linha.getAttribute('data-id');
-
-      // EDITAR
-      if (btn.classList.contains('btn-editar')) {
-        const nomeAtual = linha.children[0].textContent.trim();
-        const corSpanTexto = linha.querySelector('.cor-texto');
-        const corAtual = corSpanTexto ? corSpanTexto.textContent.trim() : '';
-
-        const novoNome = prompt('Novo nome da categoria:', nomeAtual);
-        if (novoNome === null) return;
-
-        const novaCor = prompt('Nova cor (ex: #00A884):', corAtual);
-        if (novaCor === null) return;
-
-        try {
-          const resp = await fetch(`/categorias/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome: novoNome, cor: novaCor })
-          });
-          if (!resp.ok) {
-            const erro = await resp.json().catch(() => ({}));
-            alert('Erro ao atualizar: ' + (erro.error || resp.status));
-            return;
-          }
-
-          // Atualiza na tabela
-          linha.children[0].textContent = novoNome;
-          if (corSpanTexto) {
-            corSpanTexto.textContent = novaCor;
-          }
-          const quadrado = linha.querySelector('.cor-quadrado');
-          if (quadrado) {
-            quadrado.style.backgroundColor = novaCor || 'transparent';
-          }
-        } catch (err) {
-          alert('Erro de rede ao atualizar categoria');
-        }
-      }
-
-      // EXCLUIR
-      if (btn.classList.contains('btn-excluir')) {
-        if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
-
-        try {
-          const resp = await fetch(`/categorias/${id}`, { method: 'DELETE' });
-          if (!resp.ok) {
-            const erro = await resp.json().catch(() => ({}));
-            alert('Erro ao excluir: ' + (erro.error || resp.status));
-            return;
-          }
-          linha.remove();
-        } catch (err) {
-          alert('Erro de rede ao excluir categoria');
-        }
-      }
-    });
-  });
-</script>
-
+      </thead>
+      <tbody>
+        {{#each categorias}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.nome}}</td>
+            <td>{{this.usuarioNome}}</td>
+            <td>
+              {{#if this.cor}}
+                <span class="cor-quadrado" style="background-color: {{this.cor}};"></span>
+                <span class="cor-texto">{{this.cor}}</span>
+              {{else}}
+                <span class="cor-texto">—</span>
+              {{/if}}
+            </td>
+            <td class="acoes">
+              <a href="/categorias/{{this._id}}/editar" class="btn btn-edit">Editar</a>
+              <form action="/categorias/{{this._id}}/excluir" method="POST">
+                <button type="submit" class="btn btn-delete">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhuma categoria cadastrada.</p>
+  {{/if}}
+  <script src="/js/categoria.js"></script>
 </body>
 </html>

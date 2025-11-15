@@ -2,35 +2,35 @@ const { Router } = require('express');
 const Ctrl = require('../controllers/EventosController');
 const Evento = require('../models/Evento');
 const Usuario = require('../models/Usuario');
+const { exigirLogin } = require('../utils/auth');
 
 const r = Router();
 
-r.post('/', Ctrl.criar);
-r.get('/', Ctrl.listar);
-r.get('/view/lista', Ctrl.listarView); 
-r.put('/:id', Ctrl.atualizar);
-r.delete('/:id', Ctrl.deletar);
+r.post('/', exigirLogin, Ctrl.criar);
+r.get('/', exigirLogin, Ctrl.listar);
+r.put('/:id', exigirLogin, Ctrl.atualizar);
+r.delete('/:id', exigirLogin, Ctrl.deletar);
 
-r.get('/view/filtro', async (req, res) => {
+r.get('/view/lista', exigirLogin, Ctrl.listarView);
+
+r.get('/view/filtro', exigirLogin, async (req, res) => {
   try {
-    const { usuarioId, inicio, fim } = req.query;
-    if (!usuarioId) {
-      return res.status(400).send('usuarioId é obrigatório');
-    }
+    const { titulo } = req.query;
+    if (!titulo) return res.status(400).send('titulo é obrigatório');
 
-    const usuario = await Usuario.buscarPorId(usuarioId);
-    const nomeUsuario = usuario ? usuario.nome : 'Usuário não encontrado';
+    const eventos = await Evento.listarPorTitulo(titulo);
 
-    const eventos = await Evento.buscarPorUsuarioEPeriodo(usuarioId, inicio, fim);
+    res.cookie('ultimoTitulo', titulo, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: 'Lax'
+    });
 
     res.render('eventosFiltro', {
       eventos,
-      usuarioNome: nomeUsuario,
-      inicio,
-      fim,
+      filtroTitulo: titulo
     });
   } catch (e) {
-    res.status(500).send('Erro ao renderizar a lista de eventos');
+    res.status(500).send('Erro ao filtrar eventos');
   }
 });
 

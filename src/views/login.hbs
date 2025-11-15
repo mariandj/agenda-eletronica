@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Login – Agenda Eletrônica</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login">
+  <div class="container">
+    <h1>Login</h1>
+
+    {{#if erro}}
+      <p class="erro">{{erro}}</p>
+    {{/if}}
+
+    <form method="post" action="/login">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" required value="{{email}}">
+
+      <label for="senha">Senha</label>
+      <input type="password" id="senhaHash" name="senhaHash" required>
+
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+</body>
+</html>

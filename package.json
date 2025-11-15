@@ -7,8 +7,10 @@
     "start": "node src/server.js"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
+    "express-session": "^1.18.2",
     "mongodb": "^7.0.0"
   },
   "devDependencies": {

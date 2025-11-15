@@ -101,6 +101,24 @@ class Evento {
       throw err;
     }
   }
+
+  static async listarPorTitulo(titulo) {
+  const regex = new RegExp(titulo, 'i'); 
+  return await this.collection().aggregate([
+    { $match: { titulo: { $regex: regex } } },
+    { $lookup: {
+        from: 'usuarios',
+        localField: 'usuarioId',
+        foreignField: '_id',
+        as: 'u'
+      }
+    },
+    { $unwind: { path: '$u', preserveNullAndEmptyArrays: true } },
+    { $addFields: { usuarioNome: '$u.nome' } },
+    { $project: { u: 0 } },
+    { $sort: { inicio: 1 } }
+  ]).toArray();
+}
 }
 
 module.exports = Evento;

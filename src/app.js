@@ -1,11 +1,14 @@
 const path = require('path');
 const express = require('express');
+const session = require('express-session'); 
+const cookieParser = require('cookie-parser');
 const { connect } = require('./db/mongo');
 const { logErro } = require('./utils/logger');
 const Evento = require('./models/Evento');
 const usuariosRoutes = require('./routes/usuarios');
 const categoriasRoutes = require('./routes/categorias');
 const eventosRoutes = require('./routes/eventos');
+const loginRoutes = require('./routes/login');  
 
 const app = express();
 
@@ -20,6 +23,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.use(express.json()); 
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+  secret: 'agenda-eletronica-utfpr', 
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 
+  }
+}));
+
+
+app.use((req, res, next) => {
+  res.locals.usuarioLogado = req.session.usuario || null;
+  next();
+});
+
 app.get('/health', (req, res) => res.json({ ok: true }));
 
 connect()
@@ -58,6 +79,7 @@ app.get('/', async (req, res, next) => {
   }
 });
 
+app.use(loginRoutes);       
 app.use('/usuarios', usuariosRoutes);
 app.use('/categorias', categoriasRoutes);
 app.use('/eventos', eventosRoutes);
