@@ -1,29 +1,41 @@
 # Agenda Eletrônica
-Projeto 1 da disciplina de **Programação Web Back-End (EC48B - C71)**.
+Projeto da disciplina de **Programação Web Back-End (EC48B - C71)**.
 
 ## 📌 Tema
 Tema escolhido: **Agenda Eletrônica (estilo Google Calendar)**
 
 O sistema implementa classes em Node.js que acessam o MongoDB para inserção, busca e deleção de dados. Possui, também, validação de campos obrigatórios, tratamento de execeções e armazenamento em arquivos de log, conforme especificações da entrega.  
+Para o projeto final foi utilizado o Express.js e o Postman para testar as rotas.
 
 ## 🚀 Tecnologias utilizadas
 - Node.js (LTS)
+- Express.js
+- Handlebar(hbs)
 - MongoDB (Community Server)
+- Postman - utilizado para testar e validar todas as rotas da API
 - Bibliotecas: 
-    - [mongodb](https://www.npmjs.com/package/mongodb) - driver oficial do MongoDB
-    - [dotenv](https://www.npmjs.com/package/dotenv) - gerneciamento de variáveis de ambiente
-    - [nodemon](https://www.npmjs.com/package/nodemon) - para o desenvolvimento 
+    - mongodb - driver ofical do MongoDB
+    - express - servidor e roteamento
+    - express-session
+    - cookie-parser - leitura e escrita de cookies
+    - dotenv - variáveis de ambiente
+    - nodemon - suporte ao desenvolvimento 
 
 ## 📂 Estrutura do projeto
 
 ```
 agenda-eletronica/  
   src/
-    db/           # conexão com MongoDB
-    models/       # classes: Usuario, Categoria, Evento
-    utils/        # logger e validações
-    logs/         # arquivos .log de exceções
-    index.js      # script de demonstração
+    controllers/      # lógica das rotas (Usuários, Eventos, Categorias, Login)
+    routes/           # definição das rotas
+    models/           # classes: Usuario, Categoria, Evento
+    views/            # páginas Handlebars (.hbs)
+    public/           # CSS e JS estáticos
+    utils/            # logger, validações e autenticação
+    logs/             # arquivos .log de exceções
+    db/               # conexão com MongoDB
+  app.js
+  server.js           # inicialização do servidor Express
   .env            # credenciais do MongoDB
   package.json
   README.md
@@ -59,23 +71,6 @@ npm run dev
 
 # ambiente normal
 npm start
-```
-
-## 🔍 Resultado esperado
-Ao rodar `src/index.js`, o sistema executa: 
-1. Criação de um usuário
-2. Criação de uma categoria vinculada
-3. Criação de um evento
-4. Busca de eventos do usuário
-5. Deleção de um usuário 
-
-Saída esperada no terminal: 
-```
-Usuário criado: <id_usuario>
-Categoria criada: <id_categoria>
-Evento criado: <id_evento>
-Eventos de hoje: [ { id: <id_evento>, titulo: 'Reunião de projeto' } ]
-Evento deletado? true
 ```
 
 ## ⚠️ Logs de exceções
