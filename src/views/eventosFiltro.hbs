@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Eventos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Eventos Filtrados</h1>
+  <div class="meta">
+    {{#if usuarioNome}} <strong>Usuário:</strong> {{usuarioNome}} ·{{/if}}
+    {{#if inicio}} <strong>Início:</strong> {{inicio}} ·{{/if}}
+    {{#if fim}} <strong>Fim:</strong> {{fim}}{{/if}}
+  </div>
+
+  {{#if eventos.length}}
+    <ul>
+      {{#each eventos}}
+        <li>
+          <strong>{{this.titulo}}</strong>
+          <div>
+            Início: {{formatarData this.inicio}} · Fim: {{formatarData this.fim}}
+            {{#if this.descricao}} · {{this.descricao}}{{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p class="empty">Nenhum evento encontrado para os filtros informados.</p>
+  {{/if}}
+</body>
+</html>

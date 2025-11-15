@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Usuários</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Usuários cadastrados</h1>
+
+  {{#if usuarios.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Criado em</th>
+          <th class="acoes">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each usuarios}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.nome}}</td>
+            <td>{{this.email}}</td>
+            <td>{{formatarData this.criadoEm}}</td>
+            <td class="acoes">
+              <a href="/usuarios/{{this._id}}/editar" class="btn btn-edit">Editar</a>
+              <form action="/usuarios/{{this._id}}/excluir" method="POST">
+                <button type="submit" class="btn btn-delete">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhum usuário cadastrado.</p>
+  {{/if}}
+  <script src="/js/usuario.js"></script>
+</body>
+</html>

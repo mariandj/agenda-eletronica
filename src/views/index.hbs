@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Calendário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="index">
+  <header>
+    <h1>Agenda Eletrônica</h1>
+    <nav>
+      <a href="/usuarios/view/lista">Usuários</a>
+      <a href="/eventos/view/lista">Eventos</a>
+      <a href="/categorias/view/lista">Categorias</a>
+      {{#if usuarioLogado}}
+        <p>Logado como: <strong>{{usuarioLogado.nome}}</strong> |
+          <a href="/logout">Sair</a>
+        </p>
+      {{/if}}
+    </nav>
+  </header>
+
+  <section class="calendar">
+    {{#if dias.length}}
+      {{#each dias}}
+        <div class="day-card">
+          <div class="day-title">{{this.label}}</div>
+
+          {{#each this.eventos}}
+            <div class="event-item" style="border-left-color: {{this.cor}};">
+              <div class="event-title">{{this.titulo}}</div>
+              <div class="event-meta">
+                {{formatarData this.inicio}} – {{formatarData this.fim}}
+                · Usuário: {{this.usuarioNome}}
+                {{#if this.descricao}} · {{this.descricao}}{{/if}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    {{else}}
+      <p>Nenhum evento cadastrado.</p>
+    {{/if}}
+  </section>
+</body>
+</html>

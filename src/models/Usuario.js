@@ -17,6 +17,19 @@ class Usuario {
     }
   }
 
+  static async autenticar(email, senhaHash) {
+  try {
+    const usuario = await this.collection().findOne({ 
+      email,
+      senhaHash  
+    });
+    return usuario;
+  } catch (err) {
+    logErro(err, { classe: 'Usuario', metodo: 'autenticar', email });
+    throw err;
+  }
+}
+
   static async buscarPorId(id) {
     const { ObjectId } = require('mongodb');
     try {
@@ -37,6 +50,35 @@ class Usuario {
       throw err;
     }
   }
+
+  static async listarTodos() {
+    try {
+      const usuarios = await this.collection().find({}).toArray();
+      return usuarios;
+    } catch (err) {
+      logErro(err, { classe: 'Usuario', metodo: 'listarTodos' });
+      throw err;
+    }
+  }
+
+  static async atualizarPorId(id, dados) {
+  const { ObjectId } = require('mongodb');
+  try {
+    const campos = {};
+    if (dados.nome) campos.nome = dados.nome;
+    if (dados.email) campos.email = dados.email;
+    if (dados.senhaHash) campos.senhaHash = dados.senhaHash;
+
+    const r = await this.collection().updateOne(
+      { _id: new ObjectId(id) },
+      { $set: campos }
+    );
+    return r.matchedCount === 1;
+  } catch (err) {
+    logErro(err, { classe: 'Usuario', metodo: 'atualizarPorId', id });
+    throw err;
+  }
+}
 }
 
 module.exports = Usuario;

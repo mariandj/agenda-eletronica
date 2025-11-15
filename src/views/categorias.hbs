@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Categorias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <h1>Categorias cadastradas</h1>
+
+  {{#if categorias.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Usuário</th>
+          <th>Cor</th>
+          <th class="acoes">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each categorias}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.nome}}</td>
+            <td>{{this.usuarioNome}}</td>
+            <td>
+              {{#if this.cor}}
+                <span class="cor-quadrado" style="background-color: {{this.cor}};"></span>
+                <span class="cor-texto">{{this.cor}}</span>
+              {{else}}
+                <span class="cor-texto">—</span>
+              {{/if}}
+            </td>
+            <td class="acoes">
+              <a href="/categorias/{{this._id}}/editar" class="btn btn-edit">Editar</a>
+              <form action="/categorias/{{this._id}}/excluir" method="POST">
+                <button type="submit" class="btn btn-delete">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhuma categoria cadastrada.</p>
+  {{/if}}
+  <script src="/js/categoria.js"></script>
+</body>
+</html>

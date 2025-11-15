@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Agenda Eletrônica – Eventos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Eventos cadastrados</h1>
+    <nav>
+      <a href="#" id="filtrar-por-titulo" style="float:right">Filtrar Eventos</a>
+    </nav>
+  </header>
+
+  {{#if eventos.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Descrição</th>
+          <th>Usuário</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th class="acoes">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each eventos}}
+          <tr data-id="{{this._id}}">
+            <td>{{this.titulo}}</td>
+            <td>{{this.descricao}}</td>
+            <td>{{this.usuarioNome}}</td>
+            <td>{{formatarData this.inicio}}</td>
+            <td>{{formatarData this.fim}}</td>
+            <td class="acoes">
+              <a href="/eventos/{{this._id}}/editar" class="btn btn-edit">Editar</a>
+              <form action="/eventos/{{this._id}}/excluir" method="POST">
+                <button type="submit" class="btn btn-delete">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p class="empty">Nenhum evento cadastrado.</p>
+  {{/if}}
+<script src="/js/evento.js"></script>
+</body>
+</html>
