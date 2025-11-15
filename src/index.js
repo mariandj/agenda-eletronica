@@ -1,8 +1,8 @@
-const { connect, close, getDb } = require('./mongo');
-const Usuario = require('./Usuario');
-const Categoria = require('./Categoria');
-const Evento = require('./Evento');
-const { logErro } = require('./logger');
+const { connect, close, getDb } = require('./db/mongo');
+const Usuario = require('./models/Usuario');
+const Categoria = require('./models/Categoria');
+const Evento = require('./models/Evento');
+const { logErro } = require('./utils/logger');
 
 async function bootstrap() {
   try {
@@ -45,7 +45,7 @@ async function bootstrap() {
     const deletado = await Evento.deletarPorId(String(ev._id));
     console.log('Evento deletado?', deletado);
 
-    // Teste proposital de erro
+      // Teste proposital de erro
     try {
       await Evento.inserir({
         inicio: new Date(),
